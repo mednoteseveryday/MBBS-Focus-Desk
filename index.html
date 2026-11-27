@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17264b"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg"><title>MBBS Focus Desk</title>
+<style>
+:root{--bg:#f3f5fa;--card:#fff;--ink:#172033;--muted:#68738a;--blue:#315ee8;--line:#e6eaf2}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#17264b;color:white;padding:20px max(16px,calc((100% - 980px)/2))}h1{font-size:23px;margin:0}header p{margin:5px 0 0;color:#d5def5}
+main{max-width:980px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.card{background:white;border:1px solid var(--line);border-radius:15px;padding:16px;box-shadow:0 4px 16px #17264b08}
+h2{font-size:17px;margin:0 0 12px}.muted,small{color:var(--muted)}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
+input,select,button{font:inherit;border:1px solid var(--line);border-radius:9px;padding:10px;background:white;color:var(--ink)}input,select{width:100%}button{font-weight:650;cursor:pointer}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button:disabled{opacity:.5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1;min-width:100px}.presets button{font-size:13px}.presets button.active{background:#eaf0ff;border-color:#9bb2ff}
+.timer{text-align:center;padding:12px 0}.clock{font-size:64px;font-weight:750;letter-spacing:-3px;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.stat{background:#f7f8fc;padding:12px;border-radius:11px}.stat b{display:block;font-size:23px}
+.progress{height:8px;background:#edf0f6;border-radius:20px;overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;background:var(--blue);width:0}
+.task,.history{padding:9px 0;border-bottom:1px solid var(--line)}.task{display:flex;gap:8px;align-items:center}.task input{width:auto}.task span{flex:1}.done span{text-decoration:line-through;color:#929bad}
+.bar{display:flex;gap:8px;align-items:center;margin:8px 0}.bar label{width:95px;margin:0}.bar .progress{flex:1}.bar b{font-size:12px}
+.notice{font-size:12px;color:var(--muted);line-height:1.5}.hide{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:12px}
+@media(max-width:700px){main{grid-template-columns:1fr}.clock{font-size:56px}}
+</style></head>
+<body>
+<header><h1>📚 MBBS Focus Desk</h1><p>Focus blocks · subject tracking · cloud-synced progress</p></header>
+<main>
+<section class="card" id="authCard">
+<h2>Your study account</h2><p class="muted">Sign in once on each device. Your study data will sync through your account.</p>
+<label>Email address</label><input id="email" type="email" placeholder="you@example.com">
+<button class="primary" id="sendLink" style="margin-top:10px;width:100%">Send sign-in link</button>
+<p id="authMsg" class="notice"></p><p class="notice">No password is stored by this app. Use the secure sign-in link sent to your email.</p>
+</section>
+<section class="card hide" id="appCard">
+<div class="row"><h2 style="flex:1">Focus timer</h2><button id="logout">Sign out</button></div>
+<div class="row presets"><button class="active" data-w="50" data-b="10">50 / 10</button><button data-w="25" data-b="5">25 / 5</button><button data-w="90" data-b="20">90 / 20</button></div>
+<div class="timer"><div id="mode" class="muted">FOCUS SESSION</div><div id="clock" class="clock">50:00</div>
+<div class="row" style="max-width:370px;margin:auto"><button class="primary" id="start">Start</button><button id="reset">Reset</button><button id="distract">Distracted</button></div>
+<p class="notice" id="hint">Choose your subject and topic before starting.</p></div>
+<div class="row"><div><label>Subject</label><select id="subject"><option>Medicine</option><option>Surgery</option><option>OBGYN</option><option>Pediatrics</option><option>Ophthalmology</option><option>ENT</option><option>Orthopedics</option><option>Dermatology</option><option>Psychiatry</option><option>Radiology</option><option>Anesthesia</option><option>Revision / MCQs</option></select></div>
+<div><label>Topic</label><input id="topic" placeholder="e.g. Heart failure"></div></div>
+<div class="row"><div><label>Daily target (hours)</label><input id="goal" type="number" min="1" max="16" value="6"></div><div><label>Focus rating</label><select id="rating"><option value="5">5 – Excellent</option><option value="4">4 – Good</option><option value="3" selected>3 – Average</option><option value="2">2 – Distracted</option><option value="1">1 – Poor</option></select></div></div>
+<div class="row" style="margin-top:10px"><button class="primary" id="log">End & log session</button><button id="break">Start break</button></div>
+<p class="notice">After each block, log actual focused minutes and do a short closed-book recall.</p>
+</section>
+<section class="card hide" id="dashboard">
+<h2>Today's dashboard</h2><div class="grid"><div class="stat"><b id="hours">0m</b><small>Focused today</small></div><div class="stat"><b id="count">0</b><small>Sessions</small></div><div class="stat"><b id="slips">0</b><small>Distraction slips</small></div><div class="stat"><b id="avg">—</b><small>Average focus / 5</small></div></div>
+<label>Daily target progress</label><div class="progress"><span id="goalbar"></span></div><small id="goaltext">0 of 6 hours</small>
+<h2 style="margin-top:20px">Study plan</h2><div class="row"><input id="newtask" placeholder="Add a task"><button class="primary" id="addtask" style="flex:0 0 auto">Add</button></div><div id="tasks"></div>
+</section>
+<section class="card hide" id="analytics"><h2>Subject time today</h2><div id="subjects" class="notice">No sessions yet.</div><h2 style="margin-top:20px">Recent sessions</h2><div id="history" class="notice"></div><button id="export" style="margin-top:12px">Export my study data (CSV)</button></section>
+</main><footer>Keep the next block small and achievable. Consistency beats perfect timetables.</footer>
+<script type="module" src="app.js"></script></body></html>
